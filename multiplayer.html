@@ -234,7 +234,7 @@ function playStateSounds(prev,next){
 // requestFullscreen must run immediately in a real tap/click; waiting for WebSocket loses user activation.
 const fullscreenButton=$('onlineFullscreen');
 function updateFullscreenControl(){
-  fullscreenButton.textContent=document.fullscreenElement?'⛶ 全画面を終了':'⛶ 全画面';
+  fullscreenButton.textContent=document.fullscreenElement?'⛶ 全画面閉':'⛶ 全画面';
 }
 function requestGameFullscreen(){
   if(document.fullscreenElement || !document.documentElement.requestFullscreen)return;
