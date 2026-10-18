@@ -18,7 +18,7 @@ const app=http.createServer((req,res)=>{
  const types={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.png':'image/png','.webmanifest':'application/manifest+json'};
  fs.readFile(path.join(dir,file),(err,data)=>{if(err){res.writeHead(404);res.end('Not found');return;}res.writeHead(200,{'content-type':types[path.extname(file)]||'application/octet-stream','cache-control':'no-cache','x-content-type-options':'nosniff'});res.end(data);});
 });
-const wss=new WebSocketServer({server:app,maxPayload:4096,verifyClient({origin,req}){if(!ALLOW_ORIGINS.length)return true;return !origin||ALLOW_ORIGINS.includes(origin);}});
+const wss=new WebSocketServer({server:app,maxPayload:16384,verifyClient({origin,req}){if(!ALLOW_ORIGINS.length)return true;return !origin||ALLOW_ORIGINS.includes(origin);}});
 const send=(ws,msg)=>{if(ws?.readyState===WebSocket.OPEN)ws.send(JSON.stringify(msg));};
 const id=()=>crypto.randomBytes(24).toString('hex');
 const code=()=>{let c;do{c=(crypto.randomInt(100000,1000000)).toString();}while(rooms.has(c));return c;};
@@ -62,6 +62,18 @@ wss.on('connection',(ws)=>{ws.on('message',raw=>{let msg;try{msg=JSON.parse(raw)
  if(msg.type==='create'){if(ws.room)return; if(rooms.size>=MAX_ROOM)return send(ws,{type:'error',message:'部屋数の上限です'});const c=code();const room={code:c,players:[],stage:'waiting',round:1,points:[0,0],created:Date.now(),turn:0,phase:'waiting'};rooms.set(c,room);join(ws,room,msg.name);return;}
  if(msg.type==='join'){if(ws.room)return;const room=rooms.get(String(msg.room||''));if(!room)return send(ws,{type:'error',message:'部屋が見つかりません'});if(room.stage!=='waiting')return send(ws,{type:'error',message:'対局中の部屋です'});join(ws,room,msg.name);return;}
  if(!ws.room)return send(ws,{type:'error',message:'部屋へ参加してください'});const room=rooms.get(ws.room);if(!room||room.players[ws.seat]?.ws!==ws)return;
+ if(msg.type==='voice_signal'){
+  if(room.players.length!==2||room.stage==='waiting')return;
+  const data=msg.data;
+  if(!data||typeof data!=='object'||JSON.stringify(data).length>14000)return;
+  if(data.description && !['offer','answer'].includes(data.description.type))return;
+  if(!data.description&&!data.candidate)return;
+  send(room.players[1-ws.seat]?.ws,{type:'voice_signal',data});return;
+ }
+ if(msg.type==='voice_state'){
+  if(room.players.length!==2)return;
+  send(room.players[1-ws.seat]?.ws,{type:'voice_state',enabled:msg.enabled===true});return;
+ }
  if(msg.type==='action'){const err=act(room,ws.seat,msg);if(err)send(ws,{type:'error',message:err});}
  if(msg.type==='next'){if(room.stage!=='ended'||room.finish?.matchOver)return;room.ready??=[false,false];room.ready[ws.seat]=true;send(ws,{type:'notice',message:'相手を待っています'});if(room.ready.every(Boolean)){room.ready=[false,false];room.round++;newRound(room);}}
  if(msg.type==='rematch'){if(room.stage!=='ended'||!room.finish?.matchOver)return;room.ready??=[false,false];room.ready[ws.seat]=true;if(room.ready.every(Boolean)){room.ready=[false,false];room.points=[0,0];room.round=1;newRound(room);}}
