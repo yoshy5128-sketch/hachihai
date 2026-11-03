@@ -105,7 +105,7 @@ body.in-game main{width:min(100%,530px);max-width:530px;margin:0 auto;height:100
   bgm.preload = 'metadata';
   const KEY = 'hachihai-bgm-volume';
   const saved = Number(localStorage.getItem(KEY));
-  let percent = localStorage.getItem(KEY) !== null && Number.isFinite(saved) ? Math.max(0,Math.min(100,saved)) : 30;
+  let percent = localStorage.getItem(KEY) !== null && Number.isFinite(saved) ? Math.max(0,Math.min(100,saved)) : 60;
   let activated = false;
   bgm.volume = percent / 100;
   function start() {
@@ -137,7 +137,7 @@ body.in-game main{width:min(100%,530px);max-width:530px;margin:0 auto;height:100
 /* 八牌効果音：ユーザー操作後に再生。オンラインでは状態更新から鳴動を判断 */
 (function(){
  const cues={draw:'01_draw_soft.wav',slide:'02_draw_slide.wav',discard:'03_discard_clack.wav',heavy:'04_discard_heavy.wav',riichi:'05_riichi.wav',ron:'06_ron.wav',tsumo:'07_tsumo_win.wav',result:'08_result.wav',loss:'09_loss.wav'};
- const audio={};let enabled=true,vol=.65;
+ const audio={};let enabled=true,vol=.25;
  for(const [name,file] of Object.entries(cues)){
    const sound=new Audio('./sounds/'+file);sound.preload='auto';audio[name]=sound;
  }
