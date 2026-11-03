@@ -96,9 +96,49 @@ html{height:100%;overscroll-behavior:none}body{min-height:100dvh;overscroll-beha
 @keyframes riichiRonFlash{from{outline-color:#ff4242;box-shadow:0 0 5px #ff4242}to{outline-color:#fff0b7;box-shadow:0 0 14px #ff4242}}
 @media(prefers-reduced-motion:reduce){.river .tile.riichi-discard.danger-flash{animation:none}}
 .mode-choice.not-landing .mode-heading,.mode-choice.not-landing .mode-online{display:none}.mode-choice{display:grid;gap:10px;margin:16px 0 8px}.mode-heading{text-align:center;color:#ffe5a0;font-weight:800;font-size:17px}.mode-choice .mode-start,.mode-choice .mode-online{width:100%;min-height:58px;display:flex;align-items:center;justify-content:center;text-align:center;border-radius:12px;font-size:17px;font-weight:800;text-decoration:none}.mode-choice .mode-online{background:#245b50;border:2px solid #9bdece;color:#fff5d4;flex-direction:column;gap:3px}.mode-online small{font-size:11px;color:#d3ecdf}.mode-choice .mode-start{background:#e8c877;color:#26352b;border:2px solid #f8dfa0}.mode-choice .mode-start:hover,.mode-choice .mode-online:hover{filter:brightness(1.1)}
-</style><style>#modal:has(.mode-choice.not-landing) #introSoundSlot{display:none}</style></head><body><main id="app"><div class="top"><div><div class="logo">八牌 <span style="font-size:12px">HACHIHAI</span></div><div class="sub">8 TILES • 2 PLAYERS • 20 POINTS • v0.8.5</div></div><div class="top-actions"><button class="btn" id="fullscreenBtn" type="button" title="全画面表示">⛶ 全画面</button><a class="btn" href="./multiplayer.html" style="text-decoration:none">2人対戦</a><button class="btn" id="menuBtn">ルール・設定</button></div></div><div class="points"><div class="score" id="cpuScore"><span>CPU</span><b id="cpuPts">0</b> <small>点</small></div><div class="score" id="userScore"><span>YOU</span><b id="userPts">0</b> <small>点</small></div></div><div class="info" id="roundName">第1局</div><div class="backs" id="cpuHand"></div><div id="winningBanner" class="hidden"></div><div class="board"><div><div class="river-label">CPUの捨て牌</div><div class="river-line"><div class="river" id="cpuRiver"></div><div class="riichi-stick-slot" id="cpuStick" aria-label="CPUのリーチ表示"></div></div></div><div class="middle"><div><strong id="deckCount">58</strong><small>山の残り</small></div><div><strong id="centerState">対局準備中</strong><small id="turnSub">八牌・頭脳戦</small></div></div><div><div class="river-label">あなたの捨て牌</div><div class="river-line"><div class="river" id="userRiver"></div><div class="riichi-stick-slot" id="userStick" aria-label="あなたのリーチ表示"></div></div></div></div><div class="msg" id="message">スタートで対局開始</div><div class="playerarea"><div class="hint" id="handHint">あなたの手牌</div><div class="hand" id="userHand"></div><div class="controls"><button class="btn" id="riichiBtn">リーチ −1点</button><button class="btn action" id="drawBtn">1枚引く</button></div></div><div class="footer">牌の絵柄：FluffyStuff / riichi-mahjong-tiles (Public Domain)</div></main>
-<div class="modal" id="modal"><div class="panel"><h1 id="modalTitle">八牌 - HACHIHAI</h1><div id="modalText"><p>2種類の数字牌を使った、1対1の読み合い麻雀。</p><p><b>1枚引いて1枚捨てる。</b><br>「3枚組＋3枚組＋同じ2枚」が揃えばアガリ！</p><p>連続する3枚は同じ種類で。<br>同じ数字3枚もセットになります。</p><p>ツモは<b>2点</b>、ロンは<b>3点</b>。役のボーナスも加算。リーチは宣言時−1点、成功すると＋2点。一発とダブルリーチは各＋1点（宣言後はツモ切り）。先に<b>20点</b>で勝利。</p><p class="small">同じ牌は各4枚。相手の捨て牌から残りと危険度を読みましょう。自分が捨てた牌が待ち牌に含まれる場合はロン不可です。</p></div><div id="introSoundSlot"></div><div class="setting"><button class="btn active" id="normal">CPU 標準</button><button class="btn" id="hard">CPU 強い</button></div><div id="modeChoice" class="mode-choice"><div class="mode-heading">対戦モードを選択</div><button class="btn action mode-start" id="modalPrimary" type="button">🤖 CPU対戦をスタート</button><a class="btn mode-online" href="./multiplayer.html">🌐 2人でオンライン対戦<small>同じWi-Fi・離れた友達とも対戦可能</small></a></div><button class="btn hidden" id="modalSecondary">ロンを見送る</button></div></div>
+</style><style>#modal:has(.mode-choice.not-landing) #introSoundSlot{display:none}</style><style>/* Compact landing instructions only; do not affect game dialogs */
+#modal:not(:has(.mode-choice.not-landing)) #modalText{font-size:13px;line-height:1.38}
+#modal:not(:has(.mode-choice.not-landing)) #modalText p{margin:4px 0 6px}
+@media(max-width:390px){#modal:not(:has(.mode-choice.not-landing)) #modalText{font-size:12px;line-height:1.34}}
+</style></head><body><main id="app"><div class="top"><div><div class="logo">八牌 <span style="font-size:12px">HACHIHAI</span></div><div class="sub">8 TILES • 2 PLAYERS • 20 POINTS • v0.8.5</div></div><div class="top-actions"><button class="btn" id="fullscreenBtn" type="button" title="全画面表示">⛶ 全画面</button><a class="btn" href="./multiplayer.html" style="text-decoration:none">2人対戦</a><button class="btn" id="menuBtn">ルール・設定</button></div></div><div class="points"><div class="score" id="cpuScore"><span>CPU</span><b id="cpuPts">0</b> <small>点</small></div><div class="score" id="userScore"><span>YOU</span><b id="userPts">0</b> <small>点</small></div></div><div class="info" id="roundName">第1局</div><div class="backs" id="cpuHand"></div><div id="winningBanner" class="hidden"></div><div class="board"><div><div class="river-label">CPUの捨て牌</div><div class="river-line"><div class="river" id="cpuRiver"></div><div class="riichi-stick-slot" id="cpuStick" aria-label="CPUのリーチ表示"></div></div></div><div class="middle"><div><strong id="deckCount">58</strong><small>山の残り</small></div><div><strong id="centerState">対局準備中</strong><small id="turnSub">八牌・頭脳戦</small></div></div><div><div class="river-label">あなたの捨て牌</div><div class="river-line"><div class="river" id="userRiver"></div><div class="riichi-stick-slot" id="userStick" aria-label="あなたのリーチ表示"></div></div></div></div><div class="msg" id="message">スタートで対局開始</div><div class="playerarea"><div class="hint" id="handHint">あなたの手牌</div><div class="hand" id="userHand"></div><div class="controls"><button class="btn" id="riichiBtn">リーチ −1点</button><button class="btn action" id="drawBtn">1枚引く</button></div></div><div class="footer">牌の絵柄：FluffyStuff / riichi-mahjong-tiles (Public Domain)</div></main>
+<div class="modal" id="modal"><div class="panel"><h1 id="modalTitle">八牌 - HACHIHAI</h1><div id="modalText"><p>2種類の数字牌で遊ぶ、1対1の読み合い麻雀。</p><p><b>1枚引いて1枚捨てる。</b><br>「3枚組＋3枚組＋同じ2枚」が揃えばアガリ！</p><p>連番3枚は同じ種類で。同じ牌3枚もセットになります。</p><p>ツモは<b>2点</b>、ロンは<b>3点</b>。役のボーナスも加算。リーチは宣言時−1点、成功すると＋2点。一発とダブルリーチは各＋1点（宣言後はツモ切り）。先に<b>20点</b>で勝利。</p><p class="small">各牌4枚。相手の捨て牌から残り枚数を推理！ 自分が捨てた牌が待ち牌に含まれる場合はロン不可です。</p></div><div id="introSoundSlot"></div><div class="setting"><button class="btn active" id="normal">CPU 標準</button><button class="btn" id="hard">CPU 強い</button></div><div id="modeChoice" class="mode-choice"><div class="mode-heading">対戦モードを選択</div><button class="btn action mode-start" id="modalPrimary" type="button">🤖 CPU対戦をスタート</button><a class="btn mode-online" href="./multiplayer.html">🌐 2人でオンライン対戦<small>同じWi-Fi・離れた友達とも対戦可能</small></a></div><button class="btn hidden" id="modalSecondary">ロンを見送る</button></div></div>
 
+<script>
+/* BGM: audio starts only after user interaction; volume is independent of sound effects. */
+(function () {
+  const bgm = new Audio('./bgm.mp3');
+  bgm.loop = true;
+  bgm.preload = 'metadata';
+  const KEY = 'hachihai-bgm-volume';
+  const saved = Number(localStorage.getItem(KEY));
+  let percent = localStorage.getItem(KEY) !== null && Number.isFinite(saved) ? Math.max(0,Math.min(100,saved)) : 30;
+  let activated = false;
+  bgm.volume = percent / 100;
+  function start() {
+    activated = true;
+    if (percent > 0 && bgm.paused) bgm.play().catch(() => {});
+  }
+  document.addEventListener('pointerdown',start,{capture:true});
+  document.addEventListener('keydown',start,{capture:true});
+  document.addEventListener('touchstart',start,{capture:true,passive:true});
+  window.addEventListener('pageshow', () => { if (activated && percent > 0) start(); });
+  window.addEventListener('pagehide', () => bgm.pause());
+  window.HachiBGM = {
+    get volume(){return percent;},
+    setVolume(value){
+      const val=Number(value);
+      percent=Number.isFinite(val)?Math.max(0,Math.min(100,val)):30;
+      bgm.volume=percent/100;
+      localStorage.setItem(KEY,String(percent));
+      if(percent===0)bgm.pause();
+      else if(activated)bgm.play().catch(()=>{});
+      document.querySelectorAll('[data-hachi-bgm-volume]').forEach(el=>{if(Number(el.value)!==percent)el.value=percent});
+      document.querySelectorAll('[data-hachi-bgm-pct]').forEach(el=>{el.textContent=percent+'%'});
+    }
+  };
+  window.addEventListener('storage',e=>{if(e.key===KEY && e.newValue!==null)window.HachiBGM.setVolume(e.newValue)});
+})();
+</script>
 <script>
 /* 八牌効果音：ユーザー操作後に再生。オンラインでは状態更新から鳴動を判断 */
 (function(){
@@ -116,14 +156,20 @@ html{height:100%;overscroll-behavior:none}body{min-height:100dvh;overscroll-beha
  enabled=localStorage.getItem('hachihai-sound-on')!=='0';const saved=localStorage.getItem('hachihai-sound-vol');if(saved!==null)vol=Math.max(0,Math.min(1,Number(saved)/100));
  window.mountHachiSound=function(target){
   if(!target)return;
-  target.innerHTML='<div class="sound-settings"><button id="soundToggle" type="button">♪ 音 ON</button><label for="soundVolume">音量 <span id="soundPercent"></span></label><input id="soundVolume" type="range" min="0" max="100" step="5" aria-label="効果音の音量"></div>';
+  target.innerHTML='<div class="sound-settings"><button id="soundToggle" type="button">♪ 音 ON</button><label for="soundVolume">音量 <span id="soundPercent"></span></label><input id="soundVolume" type="range" min="0" max="100" step="5" aria-label="効果音の音量"><div class="bgm-volume-row"><label for="bgmVolume">BGM音量 <span data-hachi-bgm-pct></span></label><input id="bgmVolume" data-hachi-bgm-volume type="range" min="0" max="100" step="5" aria-label="BGM音量"></div></div>';
   const b=target.querySelector('#soundToggle'),v=target.querySelector('#soundVolume'),pct=target.querySelector('#soundPercent');
   v.value=window.HachiSound.volume;
+  const bgmVolume=target.querySelector('#bgmVolume');
+  const bgmPercent=target.querySelector('[data-hachi-bgm-pct]');
+  bgmVolume.value=window.HachiBGM.volume;
+  bgmPercent.textContent=bgmVolume.value+'%';
+  bgmVolume.addEventListener('input',()=>window.HachiBGM.setVolume(bgmVolume.value));
   function refresh(){b.textContent=window.HachiSound.enabled?'♪ 音 ON':'♪ 音 OFF';pct.textContent=v.value+'%';}
   b.addEventListener('click',()=>{window.HachiSound.setEnabled(!window.HachiSound.enabled);refresh();if(window.HachiSound.enabled)window.HachiSound.play('draw');});
   v.addEventListener('input',()=>{window.HachiSound.setVolume(v.value);refresh();});refresh();
  };
  const css=document.createElement('style');css.textContent='.sound-settings{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:10px;margin:12px 0;padding:12px;border:1px solid #b99f69;border-radius:12px;background:#092c25;color:#ffecbe}.sound-settings button{background:#22594c;color:#ffe5aa;border:1px solid #b99f69;border-radius:8px;padding:8px 10px;font-weight:bold}.sound-settings label{font-size:13px;white-space:nowrap}.sound-settings input{width:min(100%,175px);accent-color:#e4c275;touch-action:pan-x}';document.head.append(css);
+ const bgmCss=document.createElement('style');bgmCss.textContent='.sound-settings .bgm-volume-row{display:flex;align-items:center;justify-content:center;gap:10px;flex:0 0 100%;flex-wrap:wrap}.sound-settings .bgm-volume-row label{min-width:110px;text-align:right}.sound-settings .bgm-volume-row input{flex:1;max-width:210px;min-width:100px}';document.head.append(bgmCss);
 
 })();
 </script>
